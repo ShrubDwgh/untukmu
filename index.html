@@ -3,169 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Untuk Wanita Tercintaku</title>
+<title>Untukmu</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&family=Dancing+Script:wght@700&display=swap');
-  body{margin:0;min-height:100vh;background:#fff0f5;display:flex;justify-content:center;align-items:center;font-family:'Poppins',sans-serif;overflow:hidden;transition:background .5s}
-  .container{text-align:center;padding:20px;max-width:420px;width:90%;z-index:2}
-  .envelope{font-size:80px;cursor:pointer;animation:float 2s infinite ease-in-out;transition:.5s}
-  .envelope.open{transform:scale(0);opacity:0}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-  .letter{display:none;background:white;padding:30px;border-radius:20px;box-shadow:0 20px 40px rgba(0,0,0,.1);animation:pop .6s ease}
-  .letter.show{display:block}
-  @keyframes pop{0%{transform:scale(.8) translateY(50px);opacity:0}100%{transform:scale(1) translateY(0);opacity:1}}
-  h1{font-family:'Dancing Script',cursive;color:#c9184a;font-size:38px;margin:10px 0}
-  p{color:#555;line-height:1.7;font-size:15px}
-  .heart-btn{font-size:55px;cursor:pointer;user-select:none;display:inline-block;margin-top:15px;transition:transform .15s cubic-bezier(.34,1.56,.64,1)}
-  .heart-btn.bump{animation:bump .2s ease}
-  @keyframes bump{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
-  .heart-btn.explode{animation:explode .6s forwards}
-  @keyframes explode{0%{transform:scale(1.4)}30%{transform:scale(2.2)}100%{transform:scale(0) rotate(720deg);opacity:0}}
-  .hint{font-size:11px;color:#aaa;margin-top:12px;height:16px}
-  .secret{display:none;margin-top:20px;padding:15px;background:#ffe5ec;border-radius:12px;color:#c9184a;font-weight:600;line-height:1.5}
-  .music-ctrl{position:fixed;top:15px;right:15px;background:white;border-radius:50px;padding:8px 12px;font-size:12px;box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer;z-index:10}
-  .hearts{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1}
-  .fall{position:absolute;animation:fall linear forwards}
-  @keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
-  .shake{animation:shake .4s}
-  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-12px)}50%{transform:translateX(12px)}75%{transform:translateX(-12px)}}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#fff0f3;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Poppins',sans-serif;overflow:hidden}
+  #container{position:relative;width:340px;height:520px;cursor:pointer}
+  /* SVG ENVELOPE */
+  #envelope{width:100%;height:100%;transition:transform 0.8s cubic-bezier(0.34,1.56,0.64,1);filter:drop-shadow(0 20px 30px rgba(0,0,0,0.15))}
+  #envelope.open{transform:translateY(100px) scale(0.9);opacity:0;pointer-events:none}
+  #flap{transform-origin:50% 0%;transition:transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+  #envelope.open #flap{transform:rotateX(180deg)}
+  
+  #letter{position:absolute;top:50%;left:50%;width:90%;background:white;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.15);transform:translate(-50%,-50%) scale(0.5) translateY(100px);opacity:0;transition:all 0.9s cubic-bezier(0.34,1.56,0.64,1) 0.3s;pointer-events:none}
+  #letter.show{transform:translate(-50%,-50%) scale(1) translateY(0);opacity:1;pointer-events:auto}
+  h1{font-size:22px;text-align:center;color:#ff4d6d;user-select:none}
+  h1:active{transform:scale(0.95)}
+  #hearts{font-size:40px;text-align:center;margin:16px 0;cursor:pointer;transition:transform 0.15s}
+  #hearts:active{transform:scale(1.3)}
+  .hidden{display:none}
 </style>
 </head>
-<body id="body">
+<body>
+<audio id="music" src="sounds/music.mp3" loop></audio>
+<audio id="boom" src="sounds/boom.mp3"></audio>
 
-<div class="music-ctrl" id="musicCtrl" onclick="toggleMusic()">🔊 Music: ON</div>
-<div class="hearts" id="hearts"></div>
+<div id="container">
+  <!-- SVG ENVELOPE SMOOTH -->
+  <svg id="envelope" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
+    <rect x="20" y="100" width="300" height="200" rx="12" fill="#ff8fa3"/>
+    <path id="flap" d="M20 112 Q170 250 320 112 Q320 100 308 100 L32 100 Q20 100 20 112Z" fill="#ff4d6d"/>
+    <text x="170" y="210" text-anchor="middle" font-size="48">💌</text>
+    <text x="170" y="240" text-anchor="middle" font-size="14" fill="white" font-weight="600">Tap untuk buka</text>
+  </svg>
 
-<!-- SUDAH AKU BENERIN JADI FILE LOKAL -->
-<audio id="bgMusic" loop preload="auto">
-  <source src="sounds/music.mp3" type="audio/mpeg">
-</audio>
-<audio id="boomSound" preload="auto">
-  <source src="sounds/boom.mp3" type="audio/mpeg">
-</audio>
-
-<div class="container" id="main">
-  <div class="envelope" id="env" onclick="openLetter()">💌<div style="font-size:14px;color:#888">klik amplopnya</div></div>
-  
-  <div class="letter" id="letter">
-    <h1>Untuk Wanita<br>Tercintaku ❤️</h1>
-    <p>
-      Hai <b style="color:#c9184a">Sayangku</b>,<br><br>
-      Kamu adalah <b>player 2 terbaik</b> dalam game hidupku.
-      Sejak kamu hadir, semua misi jadi lebih mudah dan setiap hari terasa seperti <b>victory royale</b>.<br><br>
-      Terima kasih sudah jadi rumah, semangat, dan alasan aku terus <b>upgrade diri</b>.<br>
-      Kalau hidup itu kayak coding, kamu adalah <code>return True</code> yang selalu aku cari.<br><br>
-      Aku <b>all in</b> buat kamu. Hari ini, besok, selamanya.
-    </p>
-    <div class="heart-btn" id="heart" onclick="tapHeart()">❤️</div>
-    <div class="hint" id="hint">tap hati 7x, jangan dispam...</div>
-    <div class="secret" id="secret"></div>
-    <div style="font-size:10px;color:#ccc;margin-top:20px">psst.. ketik "sayang" ada easter egg</div>
+  <div id="letter">
+    <h1 id="title">Untuk Sayangku 💖</h1>
+    <p style="margin-top:12px;line-height:1.6;text-align:center">Aku bikin ini khusus buat kamu. Tap hatinya 7x ya...</p>
+    <div id="hearts">❤️</div>
+    <p id="count" style="text-align:center;opacity:0.5">0 / 7</p>
+    <div id="secret" class="hidden" style="margin-top:16px;text-align:center;color:#ff4d6d;font-weight:700">Kamu ngetik "sayang" 💕 Aku sayang kamu lebih!</div>
   </div>
 </div>
 
 <script>
-  let taps=0, canTap=true, isExploded=false, musicOn=true, typed="";
-  const heartEl=document.getElementById('heart');
-  const hintEl=document.getElementById('hint');
-  const secretEl=document.getElementById('secret');
-  const bgMusic=document.getElementById('bgMusic');
-  const boomSound=document.getElementById('boomSound');
+  const env = document.getElementById('envelope');
+  const letter = document.getElementById('letter');
+  const music = document.getElementById('music');
+  const boom = document.getElementById('boom');
+  const hearts = document.getElementById('hearts');
+  const countEl = document.getElementById('count');
+  const title = document.getElementById('title');
+  const secret = document.getElementById('secret');
+  let count = 0;
+  let tapTitle = 0;
 
-  function playExplosionFallback(){
-    try{
-      const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(); const gain=ctx.createGain();
-      osc.type='sawtooth'; osc.frequency.setValueAtTime(200,ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(40,ctx.currentTime+0.5);
-      gain.gain.setValueAtTime(1,ctx.currentTime); gain.gain.exponentialRampToValueAtTime(0.01,ctx.currentTime+0.5);
-      osc.connect(gain); gain.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime+0.5);
-    }catch(e){}
-  }
-
-  function openLetter(){
-    document.getElementById('env').classList.add('open');
-    bgMusic.volume=0.4; bgMusic.play().catch(()=>{});
-    setTimeout(()=>{
-      document.getElementById('env').style.display='none';
-      document.getElementById('letter').classList.add('show');
-      spawnHearts(20);
-    },500);
-  }
-
-  function toggleMusic(){
-    if(musicOn){bgMusic.pause(); document.getElementById('musicCtrl').innerText='🔇 Music: OFF';}
-    else{bgMusic.play(); document.getElementById('musicCtrl').innerText='🔊 Music: ON';}
-    musicOn=!musicOn;
-  }
-
-  function tapHeart(){
-    if(!canTap || isExploded) return;
-    canTap=false; setTimeout(()=>canTap=true, 350);
-    taps++;
-    heartEl.classList.remove('bump'); void heartEl.offsetWidth; heartEl.classList.add('bump');
-    let scale=Math.min(1 + taps*0.06, 1.4);
-    heartEl.style.transform=`scale(${scale})`;
-    spawnHearts(4);
-
-    if(taps<7){
-      hintEl.innerText=`udah ${taps}/7... pelan-pelan`;
-    } else if(taps===7){
-      hintEl.innerText="STOP! 1 lagi meledak 💥";
-      secretEl.style.display='block';
-      secretEl.innerHTML="🤫 Batas cinta tercapai! Sekali lagi = DUARRR!";
-      spawnHearts(30);
-    } else if(taps>7){
-      isExploded=true;
-      boomSound.currentTime=0; boomSound.volume=0.8;
-      boomSound.play().catch(()=>playExplosionFallback());
-      playExplosionFallback();
-      heartEl.classList.add('explode');
-      document.getElementById('body').classList.add('shake');
-      document.getElementById('main').classList.add('shake');
-      spawnHearts(100);
-      setTimeout(()=>{
-        hintEl.innerText="DUARRR! Hati meledak karena kebanyakan sayang 💥";
-        secretEl.innerHTML="💔❤️‍🩹 Hatinya meledak... <br>Tapi cintaku ke kamu nggak akan pernah habis. Refresh buat balikan lagi ya sayang.";
-        document.getElementById('body').style.background="#ff4d6d";
-        setTimeout(()=>resetHeart(), 2500);
-      },400);
-    }
-  }
-
-  function resetHeart(){
-    taps=0; isExploded=false; canTap=true;
-    heartEl.classList.remove('explode','bump');
-    heartEl.style.transform='scale(1)'; heartEl.innerText='💔';
-    setTimeout(()=>{
-      heartEl.innerText='❤️';
-      hintEl.innerText='udah dibenerin, jangan dispam lagi ya 😅';
-      document.getElementById('body').style.background='#fff0f5';
-      document.getElementById('body').classList.remove('shake');
-      document.getElementById('main').classList.remove('shake');
-    },600);
-  }
-
-  function spawnHearts(n){
-    for(let i=0;i<n;i++){
-      const h=document.createElement('div'); h.className='fall';
-      h.innerText=['❤️','💖','💥','✨','💕'][Math.floor(Math.random()*5)];
-      h.style.left=Math.random()*100+'vw'; h.style.top='-20px';
-      h.style.fontSize=(15+Math.random()*22)+'px';
-      h.style.animationDuration=(2+Math.random()*2.5)+'s';
-      document.getElementById('hearts').appendChild(h);
-      setTimeout(()=>h.remove(),4000);
-    }
-  }
-
-  document.addEventListener('keydown', e=>{
-    typed+=e.key.toLowerCase();
-    if(typed.includes('sayang')){
-      typed=''; spawnHearts(100); secretEl.style.display='block';
-      secretEl.innerHTML="✨ EASTER EGG! Kamu ngetik 'sayang' ✨<br>Kamu jeli banget, sama jeli nya kayak kamu nemuin bug di hatiku. I love you 3000!";
-    }
-    if(typed.length>10) typed=typed.slice(-10);
+  env.addEventListener('click',()=>{
+    env.classList.add('open');
+    letter.classList.add('show');
+    music.play().catch(()=>{});
   });
+
+  hearts.addEventListener('click',()=>{
+    count++;
+    countEl.textContent = count + ' / 7';
+    hearts.style.transform = 'scale(1.4)';
+    setTimeout(()=>hearts.style.transform='scale(1)',120);
+    if(count>=7){
+      boom.play().catch(()=>{});
+      hearts.textContent='💥';
+      setTimeout(()=>{hearts.textContent='💖💖💖';},600);
+    }
+  });
+
+  // Easter egg sayang - HP friendly: tap judul 3x
+  title.addEventListener('click',()=>{
+    tapTitle++;
+    if(tapTitle>=3){ showSecret(); tapTitle=0; }
+    setTimeout(()=>{if(tapTitle>0 && tapTitle<3) tapTitle=0},1500);
+  });
+
+  // Tetap support keyboard fisik juga
+  let buffer='';
+  window.addEventListener('keydown',(e)=>{
+    buffer+=e.key.toLowerCase();
+    if(buffer.includes('sayang')){ showSecret(); buffer=''; }
+    if(buffer.length>10) buffer=buffer.slice(-10);
+  });
+
+  function showSecret(){
+    secret.classList.remove('hidden');
+    secret.animate([{transform:'scale(0.5)',opacity:0},{transform:'scale(1.2)',opacity:1},{transform:'scale(1)',opacity:1}],{duration:600,easing:'cubic-bezier(0.34,1.56,0.64,1)'});
+  }
 </script>
 </body>
 </html>
