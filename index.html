@@ -36,11 +36,12 @@
 <div class="music-ctrl" id="musicCtrl" onclick="toggleMusic()">🔊 Music: ON</div>
 <div class="hearts" id="hearts"></div>
 
+<!-- SUDAH AKU BENERIN JADI FILE LOKAL -->
 <audio id="bgMusic" loop preload="auto">
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3?filename=romantic-piano-113985.mp3" type="audio/mpeg">
+  <source src="sounds/music.mp3" type="audio/mpeg">
 </audio>
 <audio id="boomSound" preload="auto">
-  <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_6e9e7dcbb6.mp3?filename=8-bit-explosion-122274.mp3" type="audio/mpeg">
+  <source src="sounds/boom.mp3" type="audio/mpeg">
 </audio>
 
 <div class="container" id="main">
@@ -71,7 +72,6 @@
   const bgMusic=document.getElementById('bgMusic');
   const boomSound=document.getElementById('boomSound');
 
-  // Web Audio fallback buat ledakan kalau file gagal
   function playExplosionFallback(){
     try{
       const ctx=new (window.AudioContext||window.webkitAudioContext)();
@@ -85,7 +85,6 @@
 
   function openLetter(){
     document.getElementById('env').classList.add('open');
-    // musik nyala setelah interaksi user (aturan browser)
     bgMusic.volume=0.4; bgMusic.play().catch(()=>{});
     setTimeout(()=>{
       document.getElementById('env').style.display='none';
@@ -104,7 +103,6 @@
     if(!canTap || isExploded) return;
     canTap=false; setTimeout(()=>canTap=true, 350);
     taps++;
-
     heartEl.classList.remove('bump'); void heartEl.offsetWidth; heartEl.classList.add('bump');
     let scale=Math.min(1 + taps*0.06, 1.4);
     heartEl.style.transform=`scale(${scale})`;
@@ -119,16 +117,13 @@
       spawnHearts(30);
     } else if(taps>7){
       isExploded=true;
-      // SUARA LEDAKAN
       boomSound.currentTime=0; boomSound.volume=0.8;
       boomSound.play().catch(()=>playExplosionFallback());
       playExplosionFallback();
-
       heartEl.classList.add('explode');
       document.getElementById('body').classList.add('shake');
       document.getElementById('main').classList.add('shake');
       spawnHearts(100);
-
       setTimeout(()=>{
         hintEl.innerText="DUARRR! Hati meledak karena kebanyakan sayang 💥";
         secretEl.innerHTML="💔❤️‍🩹 Hatinya meledak... <br>Tapi cintaku ke kamu nggak akan pernah habis. Refresh buat balikan lagi ya sayang.";
@@ -163,7 +158,6 @@
     }
   }
 
-  // easter egg ketik sayang
   document.addEventListener('keydown', e=>{
     typed+=e.key.toLowerCase();
     if(typed.includes('sayang')){
